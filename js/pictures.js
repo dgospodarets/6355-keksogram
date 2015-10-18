@@ -55,7 +55,7 @@
 
     //PROCESS EACH PICTURE
     pictures.forEach(function (picture) {
-      var template = document.getElementById('picture-template').cloneNode(true);
+      var template = document.querySelector('.picture-template').cloneNode(true);
 
       insertImage(template, picture.url);
 
@@ -101,6 +101,7 @@
 
           var date = +new Date(pictureData.date);
 
+          //noinspection RedundantIfStatementJS
           if (date > oneMonthAgo) {
             return true;
           } else {
