@@ -4,18 +4,26 @@
  */
 (function () {
   /**
-   * global vars for this file
+   * -------------
+   * GLOBAL VARS FOR THIS FILE
+   * -------------
    */
   var picturesData = [];
   var picturesDataFiltered = [];
   var PICTURES_ON_PAGE = 12;
   var currentPage = 0;
+  var picturesEl = document.querySelector('.pictures');
 
+  /**
+   * -------------
+   * METHODS
+   * -------------
+   */
   /**
    * Fills next page by images
    * and tracks current page index
    */
-  function fillNextPage(){
+  function fillNextPage() {
     var picturesFrom = currentPage * PICTURES_ON_PAGE;
     var picturesTo = picturesFrom + PICTURES_ON_PAGE;
 
@@ -55,9 +63,7 @@
 
     document.querySelector('.filters').classList.remove('hidden');//show filters block
 
-    // listen filters clicks
-    var form = document.querySelector('.filters');
-    form.addEventListener("click", onFiltersClick);
+    initEvents();
   }
 
   /**
@@ -70,7 +76,6 @@
   function fillImages(pictures, startIndex, endIndex) {
     // VARS
     var fragment = document.createDocumentFragment();
-    var picturesEl = document.querySelector('.pictures');
 
     //PROCESS PAGE PICTURES
     endIndex = endIndex || startIndex + PICTURES_ON_PAGE;
@@ -87,6 +92,7 @@
 
     // FILL
     picturesEl.appendChild(fragment);
+
   }
 
   /**
@@ -97,9 +103,6 @@
    * @param [endIndex] {Number}
    */
   function removeAndFillImages(pictures, startIndex, endIndex) {
-    // VARS
-    var picturesEl = document.querySelector('.pictures');
-
     // REMOVE
     picturesEl.innerHTML = '';
 
@@ -170,10 +173,16 @@
     removeAndFillImages(picturesDataFiltered, 0);
   }
 
+  function onWindowScroll() {
+    if (picturesEl.getBoundingClientRect().bottom - 50 < window.innerHeight) {
+      fillNextPage();
+    }
+  }
+
   /**
-   *
+   * -------------
    * SCRIPT INIT
-   *
+   * -------------
    */
   document.querySelector('.filters').classList.add('hidden');//hide filters block
 
@@ -190,11 +199,11 @@
 
     // SHOW/HIDE LOADER
   xhr.onloadstart = function () {
-    document.querySelector('.pictures').classList.add('pictures-loading');
+    picturesEl.classList.add('pictures-loading');
   };
 
   xhr.onload = function () {
-    document.querySelector('.pictures').classList.remove('pictures-loading');
+    picturesEl.classList.remove('pictures-loading');
   };
 
   // SUCCESS CHECK
@@ -212,7 +221,7 @@
 
   // ERROR CHECK
   var errorTimeout = function () {
-    document.querySelector('.pictures').classList.add('pictures-failure');
+    picturesEl.classList.add('pictures-failure');
   };
 
   xhr.onerror = errorTimeout;
@@ -222,4 +231,18 @@
    * XHR SEND
    */
   xhr.send();
+
+  /**
+   * -------------
+   * EVENTS
+   * -------------
+   */
+  function initEvents() {
+    // listen filters clicks
+    var form = document.querySelector('.filters');
+    form.addEventListener("click", onFiltersClick);
+
+    // listen window scroll
+    window.addEventListener('scroll', onWindowScroll);
+  }
 }());
