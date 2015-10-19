@@ -101,6 +101,7 @@
 
           var date = +new Date(pictureData.date);
 
+          //noinspection RedundantIfStatementJS
           if (date > oneMonthAgo) {
             return true;
           } else {
@@ -110,7 +111,7 @@
 
         // sort
         picturesDataCopy.sort(function (a, b) {
-          return a.date > b.date;// ToDo doesn't work as expected
+          return +new Date(b.date) - +new Date(a.date);
         });
 
         break;
@@ -121,7 +122,7 @@
       case 'discussed':
         // sort
         picturesDataCopy.sort(function (a, b) {
-          return a.comments < b.comments;// ToDo doesn't work as expected
+          return b.comments - a.comments;
         });
     }
 
