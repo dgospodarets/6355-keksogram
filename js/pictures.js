@@ -58,10 +58,19 @@
    * Function to be colled
    * when pictures data is loaded
    */
-  function onAjaxSuccess() {
-    fillNextPage();
+  function onAjaxSuccess(responseText) {
+    // store original pictures data
+    picturesData = JSON.parse(responseText);
+    picturesDataFiltered = picturesData;
 
+    //apply filter on init
+    var filter = localStorage.getItem('filter') || 'popular';
     document.querySelector('.filters').classList.remove('hidden');//show filters block
+    document.querySelector('#filter-' + filter).checked = true;
+    applyFilter(filter);
+
+
+    fillNextPage();
 
     initEvents();
   }
@@ -97,16 +106,13 @@
 
   /**
    * Removes pictures and fills by new ones
-   *
-   * @param pictures {Array}
-   * @param startIndex {Number}
-   * @param [endIndex] {Number}
    */
-  function removeAndFillImages(pictures, startIndex, endIndex) {
+  function removeAndFillImages() {
     // REMOVE
+    currentPage = 0;
     picturesEl.innerHTML = '';
 
-    fillImages(pictures, startIndex, endIndex);
+    fillNextPage();
   }
 
   /**
@@ -120,10 +126,22 @@
   function onFiltersClick(event) {
     // VARS
     var target = event.target;
+    var filter = target.getAttribute('value');
+
+    applyFilter(filter);
+    localStorage.setItem('filter', filter);
+
+  }
+
+  /**
+   * Applies filter by value
+   *
+   * @param filter {String}
+   */
+  function applyFilter(filter) {
     picturesDataFiltered = picturesData.slice();
 
-    // check which filter was clicked
-    switch (target.getAttribute('value')) {
+    switch (filter) {
     /**
      * POPULAR
      */
@@ -170,13 +188,7 @@
     /**
      * Run a refill of pictures block
      */
-    removeAndFillImages(picturesDataFiltered, 0);
-  }
-
-  function onWindowScroll() {
-    if (picturesEl.getBoundingClientRect().bottom - 50 < window.innerHeight) {
-      fillNextPage();
-    }
+    removeAndFillImages(picturesDataFiltered);
   }
 
   /**
@@ -211,10 +223,9 @@
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         // XHR SUCCESS
-        picturesData = JSON.parse(xhr.responseText);
-        picturesDataFiltered = picturesData;
 
-        onAjaxSuccess(picturesData);
+
+        onAjaxSuccess(xhr.responseText);
       }
     }
   };
@@ -242,7 +253,20 @@
     var form = document.querySelector('.filters');
     form.addEventListener("click", onFiltersClick);
 
+    // listen custom event
+    window.addEventListener('fill-next-page', fillNextPage);
+
     // listen window scroll
-    window.addEventListener('scroll', onWindowScroll);
+    var someTimeout;
+    window.addEventListener('scroll', function () {
+      if (picturesEl.getBoundingClientRect().bottom - 50 < window.innerHeight) {
+        clearTimeout(someTimeout);
+        someTimeout = setTimeout(function () {
+          window.dispatchEvent(
+            new CustomEvent('fill-next-page')
+          );
+        }, 100);
+      }
+    });
   }
 }());
