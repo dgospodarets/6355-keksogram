@@ -1,3 +1,4 @@
+'use strict';
 /**
  * self-invokes function
  * to prevent global vars
@@ -19,16 +20,21 @@
    * METHODS
    * -------------
    */
+
   /**
    * Fills next page by images
    * and tracks current page index
+   *
+   * @returns {undefined}
    */
   function fillNextPage() {
     var picturesFrom = currentPage * PICTURES_ON_PAGE;
     var picturesTo = picturesFrom + PICTURES_ON_PAGE;
 
     // check the last page
-    if (picturesFrom > picturesData.length) return;
+    if (picturesFrom > picturesData.length) {
+      return;
+    }
 
     fillImages(picturesDataFiltered, picturesFrom, picturesTo);
 
@@ -37,8 +43,10 @@
 
   /**
    * Insert image
-   * @param template {{DomeNode}}
-   * @param pictureUrl {String}
+   * @param {HTMLElement} template -
+   * @param {String} pictureUrl -
+   *
+   * @returns {undefined}
    */
   function insertImage(template, pictureUrl) {
     var image = new Image(182, 182);
@@ -57,15 +65,19 @@
   /**
    * Function to be colled
    * when pictures data is loaded
+   *
+   * @param {String} responseText -
+   *
+   * @returns {undefined}
    */
   function onAjaxSuccess(responseText) {
     // store original pictures data
     picturesData = JSON.parse(responseText);
     picturesDataFiltered = picturesData;
 
-    //apply filter on init
+    // apply filter on init
     var filter = localStorage.getItem('filter') || 'popular';
-    document.querySelector('.filters').classList.remove('hidden');//show filters block
+    document.querySelector('.filters').classList.remove('hidden');// show filters block
     document.querySelector('#filter-' + filter).checked = true;
     applyFilter(filter);
 
@@ -78,15 +90,17 @@
   /**
    * Adds pictures
    *
-   * @param pictures {Array}
-   * @param startIndex {Number}
-   * @param [endIndex] {Number}
+   * @param {Array} pictures -
+   * @param {Number} startIndex -
+   * @param {Number} [endIndex] -
+   *
+   * @returns {undefined}
    */
   function fillImages(pictures, startIndex, endIndex) {
     // VARS
     var fragment = document.createDocumentFragment();
 
-    //PROCESS PAGE PICTURES
+    // PROCESS PAGE PICTURES
     endIndex = endIndex || startIndex + PICTURES_ON_PAGE;
     pictures = pictures.slice(startIndex, endIndex);
     pictures.forEach(function (picture) {
@@ -106,6 +120,8 @@
 
   /**
    * Removes pictures and fills by new ones
+   *
+   * @returns {undefined}
    */
   function removeAndFillImages() {
     // REMOVE
@@ -121,7 +137,8 @@
    * 2) applies an appropriate filter for pictures data
    * 3) runs a refill of pictures block
    *
-   * @param event
+   * @param {Event} event -
+   * @returns {undefined}
    */
   function onFiltersClick(event) {
     // VARS
@@ -136,12 +153,16 @@
   /**
    * Applies filter by value
    *
-   * @param filter {String}
+   * @param {String} filter -
+   * @returns {undefined}
    */
   function applyFilter(filter) {
     picturesDataFiltered = picturesData.slice();
 
     switch (filter) {
+      default:
+        break;
+
     /**
      * POPULAR
      */
@@ -155,12 +176,12 @@
       case 'new':
         // filter
         picturesDataFiltered = picturesDataFiltered.filter(function (pictureData) {
-          var today = new Date;
+          var today = new Date();
           var oneMonthAgo = +new Date(today.getUTCFullYear(), today.getMonth() - 1, today.getDate());
 
           var date = +new Date(pictureData.date);
 
-          //noinspection RedundantIfStatementJS
+          // noinspection RedundantIfStatementJS
           if (date > oneMonthAgo) {
             return true;
           } else {
@@ -196,7 +217,7 @@
    * SCRIPT INIT
    * -------------
    */
-  document.querySelector('.filters').classList.add('hidden');//hide filters block
+  document.querySelector('.filters').classList.add('hidden');// hide filters block
 
 
   /**
@@ -231,9 +252,9 @@
   };
 
   // ERROR CHECK
-  var errorTimeout = function () {
+  function errorTimeout() {
     picturesEl.classList.add('pictures-failure');
-  };
+  }
 
   xhr.onerror = errorTimeout;
   xhr.ontimeout = errorTimeout;
@@ -248,10 +269,11 @@
    * EVENTS
    * -------------
    */
+
   function initEvents() {
     // listen filters clicks
     var form = document.querySelector('.filters');
-    form.addEventListener("click", onFiltersClick);
+    form.addEventListener('click', onFiltersClick);
 
     // listen custom event
     window.addEventListener('fill-next-page', fillNextPage);
