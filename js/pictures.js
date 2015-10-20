@@ -42,13 +42,13 @@
   }
 
   /**
-   * Insert image
+   * Inserts image
    * @param {HTMLElement} template -
-   * @param {String} pictureUrl -
+   * @param {Object} picture -
    *
    * @returns {undefined}
    */
-  function insertImage(template, pictureUrl) {
+  function insertImage(template, picture) {
     var image = new Image(182, 182);
     var imgToReplace = template.content.querySelector('img');
     var link = template.content.querySelector('a');
@@ -59,7 +59,7 @@
     image.onerror = function () {
       link.classList.add('picture-load-failure');
     };
-    image.src = pictureUrl;
+    image.src = picture.url;
   }
 
   /**
@@ -73,7 +73,7 @@
   function onAjaxSuccess(responseText) {
     // store original pictures data
     picturesData = JSON.parse(responseText);
-    picturesDataFiltered = picturesData;
+    picturesDataFiltered = picturesData.slice();// clone the original
 
     // apply filter on init
     var filter = localStorage.getItem('filter') || 'popular';
@@ -106,7 +106,7 @@
     pictures.forEach(function (picture) {
       var template = document.querySelector('.picture-template').cloneNode(true);
 
-      insertImage(template, picture.url);
+      insertImage(template, picture);
 
       template.content.querySelector('.picture-comments').innerHTML = picture.comments;
       template.content.querySelector('.picture-likes').innerHTML = picture.likes;
@@ -181,12 +181,7 @@
 
           var date = +new Date(pictureData.date);
 
-          // noinspection RedundantIfStatementJS
-          if (date > oneMonthAgo) {
-            return true;
-          } else {
-            return false;
-          }
+          return date > oneMonthAgo;
         });
 
         // sort
