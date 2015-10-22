@@ -50,7 +50,6 @@
         console.log('show next photo');
         break;
       case Key.ESC:
-      default:
         hideGallery();
         break;
     }
