@@ -94,8 +94,6 @@
 
       photos.push(photo);
 
-      template.querySelector('.picture-comments').innerHTML = picture.comments;
-      template.querySelector('.picture-likes').innerHTML = picture.likes;
       fragment.appendChild(template);
     });
 
