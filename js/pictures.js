@@ -1,3 +1,4 @@
+/*global Photo*/
 'use strict';
 /**
  * self-invokes function
