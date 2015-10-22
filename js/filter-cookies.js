@@ -5,7 +5,7 @@
     var matches = document.cookie.match(new RegExp(
       '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
     ));
-    return matches ? decodeURIComponent(matches[1]) : void (0);
+    return matches ? decodeURIComponent(matches[1]) : null;
   }
 
   function setCookie(name, value, options) {
