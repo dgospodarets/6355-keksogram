@@ -14,6 +14,7 @@
   var PICTURES_ON_PAGE = 12;
   var currentPage = 0;
   var picturesEl = document.querySelector('.pictures');
+  var photos = [];
 
   /**
    * -------------
@@ -39,27 +40,6 @@
     fillImages(picturesDataFiltered, picturesFrom, picturesTo);
 
     currentPage = currentPage + 1;
-  }
-
-  /**
-   * Inserts image
-   * @param {HTMLElement} template -
-   * @param {Object} picture -
-   *
-   * @returns {undefined}
-   */
-  function insertImage(template, picture) {
-    var image = new Image(182, 182);
-    var imgToReplace = template.content.querySelector('img');
-    var link = template.content.querySelector('a');
-
-    image.onload = function() {
-      imgToReplace.parentNode.replaceChild(image, imgToReplace);
-    };
-    image.onerror = function() {
-      link.classList.add('picture-load-failure');
-    };
-    image.src = picture.url;
   }
 
   /**
@@ -104,13 +84,18 @@
     endIndex = endIndex || startIndex + PICTURES_ON_PAGE;
     pictures = pictures.slice(startIndex, endIndex);
     pictures.forEach(function(picture) {
-      var template = document.querySelector('.picture-template').cloneNode(true);
+      var photo = new Photo({
+        template: document.querySelector('.picture-template').content.children[0].cloneNode(true),
+        picture: picture
+      });
 
-      insertImage(template, picture);
+      var template = photo.render();
 
-      template.content.querySelector('.picture-comments').innerHTML = picture.comments;
-      template.content.querySelector('.picture-likes').innerHTML = picture.likes;
-      fragment.appendChild(template.content);
+      photos.push(photo);
+
+      template.querySelector('.picture-comments').innerHTML = picture.comments;
+      template.querySelector('.picture-likes').innerHTML = picture.likes;
+      fragment.appendChild(template);
     });
 
     // FILL
@@ -126,7 +111,10 @@
   function removeAndFillImages() {
     // REMOVE
     currentPage = 0;
-    picturesEl.innerHTML = '';
+    photos.forEach(function(photo) {
+      photo.unrender();
+    });
+    photos = [];
 
     fillNextPage();
   }
@@ -202,9 +190,9 @@
     }
 
     /**
-     * Run a refill of pictures block
+     * Run and refill pictures block
      */
-    removeAndFillImages(picturesDataFiltered);
+    removeAndFillImages();
   }
 
   /**

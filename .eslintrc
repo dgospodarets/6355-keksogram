@@ -1,7 +1,8 @@
 root: true
 
 globals:
-  docCookies: true
+  docCookies: true,
+  Photo: true
 
 env:
   browser: true
