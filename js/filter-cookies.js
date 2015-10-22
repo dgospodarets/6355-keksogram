@@ -1,11 +1,11 @@
 'use strict';
 
-(function () {
+(function() {
   function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
       '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
     ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
+    return matches ? decodeURIComponent(matches[1]) : void (0);
   }
 
   function setCookie(name, value, options) {
@@ -53,7 +53,7 @@
 
   var button = document.getElementById('filter-fwd');
 
-  button.onclick = function () {
+  button.onclick = function() {
     var value = document.querySelector('input[name = "upload-filter"]:checked').value;
 
     var DateLifeCookie = new Date();

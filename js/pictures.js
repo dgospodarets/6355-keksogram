@@ -3,7 +3,7 @@
  * self-invokes function
  * to prevent global vars
  */
-(function () {
+(function() {
   /**
    * -------------
    * GLOBAL VARS FOR THIS FILE
@@ -53,10 +53,10 @@
     var imgToReplace = template.content.querySelector('img');
     var link = template.content.querySelector('a');
 
-    image.onload = function () {
+    image.onload = function() {
       imgToReplace.parentNode.replaceChild(image, imgToReplace);
     };
-    image.onerror = function () {
+    image.onerror = function() {
       link.classList.add('picture-load-failure');
     };
     image.src = picture.url;
@@ -103,7 +103,7 @@
     // PROCESS PAGE PICTURES
     endIndex = endIndex || startIndex + PICTURES_ON_PAGE;
     pictures = pictures.slice(startIndex, endIndex);
-    pictures.forEach(function (picture) {
+    pictures.forEach(function(picture) {
       var template = document.querySelector('.picture-template').cloneNode(true);
 
       insertImage(template, picture);
@@ -175,7 +175,7 @@
      */
       case 'new':
         // filter
-        picturesDataFiltered = picturesDataFiltered.filter(function (pictureData) {
+        picturesDataFiltered = picturesDataFiltered.filter(function(pictureData) {
           var today = new Date();
           var oneMonthAgo = +new Date(today.getUTCFullYear(), today.getMonth() - 1, today.getDate());
 
@@ -185,7 +185,7 @@
         });
 
         // sort
-        picturesDataFiltered.sort(function (a, b) {
+        picturesDataFiltered.sort(function(a, b) {
           return +new Date(b.date) - +new Date(a.date);
         });
 
@@ -196,7 +196,7 @@
      */
       case 'discussed':
         // sort
-        picturesDataFiltered.sort(function (a, b) {
+        picturesDataFiltered.sort(function(a, b) {
           return b.comments - a.comments;
         });
     }
@@ -226,16 +226,16 @@
    */
 
     // SHOW/HIDE LOADER
-  xhr.onloadstart = function () {
+  xhr.onloadstart = function() {
     picturesEl.classList.add('pictures-loading');
   };
 
-  xhr.onload = function () {
+  xhr.onload = function() {
     picturesEl.classList.remove('pictures-loading');
   };
 
   // SUCCESS CHECK
-  xhr.onreadystatechange = function () {
+  xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         // XHR SUCCESS
@@ -275,10 +275,10 @@
 
     // listen window scroll
     var someTimeout;
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', function() {
       if (picturesEl.getBoundingClientRect().bottom - 50 < window.innerHeight) {
         clearTimeout(someTimeout);
-        someTimeout = setTimeout(function () {
+        someTimeout = setTimeout(function() {
           window.dispatchEvent(
             new CustomEvent('fill-next-page')
           );
