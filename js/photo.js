@@ -27,6 +27,8 @@
     this._image = image;
     var imgToReplace = template.querySelector('img');
     this._element = template;
+    template.querySelector('.picture-comments').innerHTML = picture.comments;
+    template.querySelector('.picture-likes').innerHTML = picture.likes;
 
     // EVENTS
     image.onload = function() {
