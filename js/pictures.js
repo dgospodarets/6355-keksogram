@@ -1,4 +1,4 @@
-/*global Photo*/
+/*global Photo, Gallery*/
 'use strict';
 /**
  * self-invokes function
@@ -16,6 +16,8 @@
   var currentPage = 0;
   var picturesEl = document.querySelector('.pictures');
   var photos = [];
+  var gallery;
+  var picturesUrls = [];
 
   /**
    * -------------
@@ -194,6 +196,20 @@
     removeAndFillImages();
   }
 
+
+  /**
+   * GALLERY HELPERS
+   */
+  function getPhotosUrls() {
+    picturesData.forEach(function(picture) {
+      picturesUrls.push(picture.url);
+    });
+  }
+
+  function getPhotoIndex(photo) {
+    return picturesUrls.indexOf(photo._data.picture.url);
+  }
+
   /**
    * -------------
    * SCRIPT INIT
@@ -271,6 +287,18 @@
           );
         }, 100);
       }
+    });
+
+    // listen photo click
+    window.addEventListener('galleryclick', function(event) {
+      if (!gallery) {
+        gallery = new Gallery();
+        getPhotosUrls();
+        gallery.setPhotos(picturesUrls);
+      }
+
+      gallery.setCurrentPhoto(getPhotoIndex(event.detail.photo));
+      gallery.show();
     });
   }
 }());
