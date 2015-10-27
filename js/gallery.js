@@ -5,43 +5,67 @@
     'LEFT': 37,
     'RIGHT': 39
   };
-  var pictures = document.querySelector('.pictures');
-  var closeButton = document.querySelector('.gallery-overlay-close');
-  var galleryOverlay = document.querySelector('.gallery-overlay');
+
+  /**
+   * -------------
+   * GALLERY OBJECT
+   * -------------
+   */
+  var Gallery = function() {
+    this._photos = [];
+
+    this._galleryOverlay = document.querySelector('.gallery-overlay');
+    this._closeButton = document.querySelector('.gallery-overlay-close');
+
+    this._onDocumentKeyDownBinded = this._onDocumentKeyDown.bind(this);
+    this._closeHandlerBinded = this._closeHandler.bind(this);
+  };
+
+  /**
+   *
+   * @param {Array} picturesUrls
+   *
+   * @returns {undefined}
+   */
+  Gallery.prototype.setPhotos = function(picturesUrls) {
+    this._photos = picturesUrls;
+  };
+
+  Gallery.prototype.setCurrentPhoto = function(index) {
+    this._currentPhoto = index;
+
+    var photoUrl = this._photos[this._currentPhoto];
+
+    // Show the photo in the gallery
+    this._galleryOverlay.querySelector('.gallery-overlay-image').src = photoUrl;
+
+    // !!!FOR REVIEW!!!
+    // COULDN'T FIND A BLOCK WHERE THIS DATA
+    // HAST TO BE SHOWN
+    // ToDo и пишет ее номер в соответствующем блоке
+  };
 
 
   /**
-   * METHODS
+   * SHOW / HIDE
    */
 
-  function showGalary() {
-    galleryOverlay.classList.remove('invisible');
-    document.body.addEventListener('keydown', keyHandler);
-    closeButton.addEventListener('click', closeHandler);
-  }
+  Gallery.prototype.show = function() {
+    this._galleryOverlay.classList.remove('invisible');
+    document.body.addEventListener('keydown', this._onDocumentKeyDownBinded);
+    this._closeButton.addEventListener('click', this._closeHandlerBinded);
+  };
 
-  function hideGallery() {
-    galleryOverlay.classList.add('invisible');
-    document.body.removeEventListener('keydown', keyHandler);
-    closeButton.removeEventListener('click', closeHandler);
-  }
-
+  Gallery.prototype.hide = function() {
+    this._galleryOverlay.classList.add('invisible');
+    document.body.removeEventListener('keydown', this._onDocumentKeyDownBinded);
+    this._closeButton.removeEventListener('click', this._closeHandlerBinded);
+  };
 
   /**
    * EVENTS
    */
-
-  function closeHandler(event) {
-    event.preventDefault();
-    hideGallery();
-  }
-
-  function openHandler(event) {
-    event.preventDefault();
-    showGalary();
-  }
-
-  function keyHandler(event) {
+  Gallery.prototype._onDocumentKeyDown = function(event) {
     switch (event.keyCode) {
       case Key.LEFT:
         console.log('show previos photo');
@@ -50,13 +74,25 @@
         console.log('show next photo');
         break;
       case Key.ESC:
-        hideGallery();
+        this.hide();
         break;
     }
-  }
+  };
+
+  Gallery.prototype._closeHandler = function(event) {
+    event.preventDefault();
+    this.hide();
+  };
+
+  // !!!FOR REVIEW!!!
+  // FOR SOME REASONS, THIS METHOD IS ASKED IN THE TASK
+  // BUT IT IS NOT USED AT ALL
+  Gallery.prototype._onPhotoClick = function() {
+    //this.setCurrentPhoto(index);
+  };
 
   /**
-   * INIT
+   * TO GLOBAL SCOPE
    */
-  pictures.addEventListener('click', openHandler);
+  window.Gallery = Gallery;
 }());

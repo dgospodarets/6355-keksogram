@@ -12,9 +12,14 @@
   /**
    * @private
    */
-  Photo.prototype._onClick = function() {
+  Photo.prototype._onClick = function(event) {
+    event.preventDefault();
     if (!this._element.classList.contains('.picture-load-failure')) {
-      var galleryEvent = new CustomEvent('galleryclick');
+      var galleryEvent = new CustomEvent('galleryclick', {
+        detail: {
+          photo: this
+        }
+      });
       window.dispatchEvent(galleryEvent);
     }
   };
