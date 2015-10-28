@@ -88,7 +88,7 @@
     pictures = pictures.slice(startIndex, endIndex);
     pictures.forEach(function(picture) {
       var photo = new Photo({
-        template: document.querySelector('#picture-template').content.children[0].cloneNode(true),
+        template: document.getElementById('picture-template').content.children[0].cloneNode(true),
         picture: picture
       });
 
