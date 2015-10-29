@@ -1,5 +1,7 @@
 'use strict';
-(function() {
+
+
+define([], function() {
   var Key = {
     'ESC': 27,
     'LEFT': 37,
@@ -91,8 +93,6 @@
     //this.setCurrentPhoto(index);
   };
 
-  /**
-   * TO GLOBAL SCOPE
-   */
-  window.Gallery = Gallery;
-}());
+
+  return Gallery;
+});

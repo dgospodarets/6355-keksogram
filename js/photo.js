@@ -1,5 +1,6 @@
 'use strict';
-(function() {
+
+define([], function() {
   var Photo = function(data) {
     this._data = data;
     this._element = null;
@@ -59,5 +60,6 @@
     this._image.onerror = null;
     this._element.removeEventListener('click', this._onClick);
   };
-  window.Photo = Photo;
-}());
+
+  return Photo;
+});
